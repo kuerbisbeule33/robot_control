@@ -24,3 +24,5 @@ private:
     QVector<QAction*> connections;
 };
 #endif // MAINWINDOW_H
+
+//Test
