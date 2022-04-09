@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMenu>
+#include <QAction>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,5 +20,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QMenu* connectionMenu;
+    QVector<QAction*> connections;
 };
 #endif // MAINWINDOW_H

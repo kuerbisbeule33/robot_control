@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    connectionMenu = menuBar()->addMenu(tr("&Connection"));
 }
 
 MainWindow::~MainWindow()
