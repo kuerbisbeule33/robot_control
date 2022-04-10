@@ -4,7 +4,9 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QAction>
+#include <QActionGroup>
 #include <QVector>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,8 +22,14 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
     QMenu* connectionMenu;
-    QVector<QAction*> connections;
+    QList<QAction*>connectionList;
+    //QActionGroup* connectionGroup;
+    //QVector<QAction*> connectionList;
+
+private slots:
+    void search();
 };
 #endif // MAINWINDOW_H
 
