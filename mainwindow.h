@@ -7,6 +7,10 @@
 #include <QActionGroup>
 #include <QVector>
 #include <QList>
+#include <QSerialPort>
+#include <QSerialPortInfo>
+#include <qsignalmapper.h>
+#include "settingsdialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,17 +23,22 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void loadPortSettings();
 
 private:
     Ui::MainWindow *ui;
+    SettingsDialog* settings;
 
     QMenu* connectionMenu;
-    QList<QAction*>connectionList;
-    //QActionGroup* connectionGroup;
-    //QVector<QAction*> connectionList;
+    QList<QAction*> connectionList;
+    QList<QSignalMapper*> mapperList;
+    QSerialPort* port;
 
 private slots:
     void search();
+    void openSettings();
+    void connectToPort(QString portName);
+    void disconnectPort();
 };
 #endif // MAINWINDOW_H
 

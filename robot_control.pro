@@ -11,16 +11,26 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     MainWidget.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    serialportwriter.cpp \
+    settingsdialog.cpp
 
 HEADERS += \
     MainWidget.h \
-    mainwindow.h
+    mainwindow.h \
+    serialportwriter.h \
+    settingsdialog.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    settingsdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    res.qrc
+
+RC_ICONS = robot.ico

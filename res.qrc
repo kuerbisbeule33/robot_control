@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>robot.ico</file>
+        <file>config.txt</file>
+        <file>exit.ico</file>
+        <file>settings.ico</file>
+        <file>connection.ico</file>
+    </qresource>
+</RCC>
