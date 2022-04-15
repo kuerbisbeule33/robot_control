@@ -9,7 +9,6 @@
 #include <QList>
 #include <QSerialPort>
 #include <QSerialPortInfo>
-#include <qsignalmapper.h>
 #include "settingsdialog.h"
 
 QT_BEGIN_NAMESPACE
@@ -28,10 +27,8 @@ public:
 private:
     Ui::MainWindow *ui;
     SettingsDialog* settings;
-
     QMenu* connectionMenu;
     QList<QAction*> connectionList;
-    QList<QSignalMapper*> mapperList;
     QSerialPort* port;
 
 private slots:

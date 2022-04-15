@@ -70,7 +70,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     m_ui->setupUi(this);
 
     this->setWindowTitle("Connection Settings");
-    this->setWindowIcon(QIcon("settings.ico"));
+    this->setWindowIcon(QIcon("://settings.ico"));
 
     m_ui->baudRateBox->addItem(QStringLiteral("9600"), QSerialPort::Baud9600);
     m_ui->baudRateBox->addItem(QStringLiteral("19200"), QSerialPort::Baud19200);
