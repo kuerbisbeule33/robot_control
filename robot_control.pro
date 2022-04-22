@@ -13,13 +13,15 @@ SOURCES += \
     MainWidget.cpp \
     mainwindow.cpp \
     serialportwriter.cpp \
-    settingsdialog.cpp
+    settingsdialog.cpp \
+    codeeditor.cpp
 
 HEADERS += \
     MainWidget.h \
     mainwindow.h \
     serialportwriter.h \
-    settingsdialog.h
+    settingsdialog.h \
+    codeeditor.h
 
 FORMS += \
     mainwindow.ui \
