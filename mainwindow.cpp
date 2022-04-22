@@ -30,13 +30,39 @@ MainWindow::MainWindow(QWidget *parent)
     //verbindungsmenü
     connectionMenu = menuBar()->addMenu("Connection");
     connectionMenu->setToolTipsVisible(true);
-    QAction* set = new QAction("Settings");
-    set->setIcon(QIcon("://settings.ico"));
-    set->setIconVisibleInMenu(true);
-    connect(set, SIGNAL(triggered()), this, SLOT(openSettings()));
-    connectionMenu->addAction(set);
     connect(connectionMenu, SIGNAL(aboutToShow()), this, SLOT(search()));
     connectionMenu->addSeparator();
+
+    //filemenü
+    fileMenu = menuBar()->addMenu("File");
+    QAction* newFile = new QAction("new File");
+    fileMenu->addAction(newFile);
+    QAction* loadFile = new QAction("load File");
+    fileMenu->addAction(loadFile);
+    QAction* saveFile = new QAction("save File");
+    fileMenu->addAction(saveFile);
+
+    //robot mode menü
+    modeMenu = menuBar()->addMenu("Robot Mode");
+    QAction* runArduino = new QAction("Run Programm on Arduino");
+    fileMenu->addAction(runArduino);
+    QAction* runManual = new QAction("Use Joysticks");
+    fileMenu->addAction(runManual);
+    QAction* runQT = new QAction("PC controlled");
+    fileMenu->addAction(runQT);
+
+    //execute programm menü
+    runMenu = menuBar()->addMenu("Execute");
+    QAction* runOnce = new QAction("Run Programm once");
+    fileMenu->addAction(runOnce);
+    QAction* runLoop = new QAction("Run Programm forever");
+    fileMenu->addAction(runLoop);
+    QAction* stop = new QAction("Stop Programm");
+    fileMenu->addAction(stop);
+
+    //einstellungen
+    settingsMenu = menuBar()->addMenu("Settings");
+    connect(settingsMenu, SIGNAL(aboutToShow()), this, SLOT(openSettings()));
 
     //wenn erlaubt, direkt verinden
     QFile file("config.txt");
@@ -69,6 +95,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::search(){
     //alle actions löschen
+    qDebug() << "_search_";
     for (const auto& i : connectionList){
         connectionMenu->removeAction(i);
     }

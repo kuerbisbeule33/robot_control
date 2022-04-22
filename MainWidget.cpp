@@ -44,6 +44,8 @@ MainWidget::MainWidget(QWidget *parent)
     slider1 = new QSlider(Qt::Orientation::Horizontal);
     slider1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     angle1 = new QSpinBox;
+    angle1->setRange(0, 359);
+    angle1->setFixedWidth(50);
     left1 = new QPushButton(QIcon("://left.png"), "");
     right1 = new QPushButton(QIcon("://right.png"), "");
     slider1HBox = new QHBoxLayout;
@@ -55,6 +57,8 @@ MainWidget::MainWidget(QWidget *parent)
     slider2 = new QSlider(Qt::Orientation::Horizontal);
     slider2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     angle2 = new QSpinBox;
+    angle2->setRange(0, 359);
+    angle2->setFixedWidth(50);
     left2 = new QPushButton(QIcon("://left.png"), "");
     right2 = new QPushButton(QIcon("://right.png"), "");
     slider2HBox = new QHBoxLayout;
@@ -66,6 +70,8 @@ MainWidget::MainWidget(QWidget *parent)
     slider3 = new QSlider(Qt::Orientation::Horizontal);
     slider3->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     angle3 = new QSpinBox;
+    angle3->setRange(0, 359);
+    angle3->setFixedWidth(50);
     left3 = new QPushButton(QIcon("://left.png"), "");
     right3 = new QPushButton(QIcon("://right.png"), "");
     slider3HBox = new QHBoxLayout;
@@ -77,6 +83,8 @@ MainWidget::MainWidget(QWidget *parent)
     slider4 = new QSlider(Qt::Orientation::Horizontal);
     slider4->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     angle4 = new QSpinBox;
+    angle4->setRange(0, 359);
+    angle4->setFixedWidth(50);
     left4 = new QPushButton(QIcon("://left.png"), "");
     right4 = new QPushButton(QIcon("://right.png"), "");
     slider4HBox = new QHBoxLayout;
@@ -86,6 +94,8 @@ MainWidget::MainWidget(QWidget *parent)
     slider4HBox->addWidget(right4);
 
     step = new QSpinBox;
+    step->setRange(1, 100);
+    step->setFixedWidth(100);
     savePoint = new QPushButton("save Point in File");
     savePoint->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     otherHBox = new QHBoxLayout;
