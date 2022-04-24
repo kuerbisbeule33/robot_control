@@ -10,6 +10,7 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include "settingsdialog.h"
+#include "MainWidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -25,17 +26,33 @@ public:
     void loadPortSettings();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui;
+    MainWidget* mainWidget;
     SettingsDialog* settings;
     QMenu* connectionMenu;
     QList<QAction*> connectionList;
     QSerialPort* port;
+    QString curFile;
 
 private slots:
     void search();
     void openSettings();
     void connectToPort(QString portName);
     void disconnectPort();
+
+    void newFile();
+    bool save();
+    bool saveAs();
+    void open();
+    void documentWasModified();
+
+public:
+
+    bool maybeSave();
+    void loadFile(const QString &fileName);
+    bool saveFile(const QString &fileName);
+    void setCurrentFile(const QString &fileName);
+    QString strippedName(const QString &fullFileName);
 };
 #endif // MAINWINDOW_H
 

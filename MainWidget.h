@@ -57,6 +57,7 @@ private:
     QSlider* slider2;
     QSlider* slider3;
     QSlider* slider4;
+public:
     CodeEditor* editor;
 
 signals:
