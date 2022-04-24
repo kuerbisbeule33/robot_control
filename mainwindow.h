@@ -27,11 +27,7 @@ public:
 private:
     Ui::MainWindow *ui;
     SettingsDialog* settings;
-    QMenu* settingsMenu;
     QMenu* connectionMenu;
-    QMenu* fileMenu;
-    QMenu* modeMenu;
-    QMenu* runMenu;
     QList<QAction*> connectionList;
     QSerialPort* port;
 
