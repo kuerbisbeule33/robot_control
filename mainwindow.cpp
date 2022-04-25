@@ -18,6 +18,7 @@
 #include <QFont>
 #include <QDir>
 #include <QToolBar>
+#include <QTextEdit>
 #include <QFileDialog>
 #include <QSaveFile>
 #include "settingsdialog.h"
@@ -30,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     //wainwidget
     mainWidget = new MainWidget();
     this->setCentralWidget(mainWidget);
+    connect(this->mainWidget->editor->document(), &QTextDocument::contentsChanged, this, &MainWindow::documentWasModified);
 
     //Fenster anpassen
     QMainWindow::showMaximized();
@@ -52,21 +54,21 @@ MainWindow::MainWindow(QWidget *parent)
     QToolBar *fileToolBar = addToolBar(tr("File"));
     QAction *newAct = new QAction(QIcon("://new.png"), "New", this);
     newAct->setShortcuts(QKeySequence::New);
-    newAct->setStatusTip(tr("Create a new file"));
+    newAct->setStatusTip("Create a new file");
     connect(newAct, &QAction::triggered, this, &MainWindow::newFile);
     fileMenu->addAction(newAct);
     fileToolBar->addAction(newAct);
     //datei öffnen
     QAction *openAct = new QAction(QIcon("://open.png"), "Open...", this);
     openAct->setShortcuts(QKeySequence::Open);
-    openAct->setStatusTip(tr("Open an existing file"));
+    openAct->setStatusTip("Open an existing file");
     connect(openAct, &QAction::triggered, this, &MainWindow::open);
     fileMenu->addAction(openAct);
     fileToolBar->addAction(openAct);
     //datei speichern
     QAction *saveAct = new QAction(QIcon("://save.png"), "Save", this);
     saveAct->setShortcuts(QKeySequence::Save);
-    saveAct->setStatusTip(tr("Save the document to disk"));
+    saveAct->setStatusTip("Save the document to disk");
     connect(saveAct, &QAction::triggered, this, &MainWindow::save);
     fileMenu->addAction(saveAct);
     fileToolBar->addAction(saveAct);
@@ -75,8 +77,46 @@ MainWindow::MainWindow(QWidget *parent)
     fileMenu->addAction(saveAsAct);
     connect(saveAct, &QAction::triggered, this, &MainWindow::saveAs);
     saveAsAct->setShortcuts(QKeySequence::SaveAs);
-    saveAsAct->setStatusTip(tr("Save the document under a new name"));
+    saveAsAct->setStatusTip("Save the document under a new name");
 
+    //vor, zurück, kopieren, ausschneiden, einfügen
+    QToolBar *tb = addToolBar("Edit Actions");
+    QMenu *menu = menuBar()->addMenu("Edit");
+    //zurück
+    QAction* actionUndo = new QAction(QIcon("://editundo.png"), "Undo", this);
+    actionUndo->setShortcut(QKeySequence::Undo);
+    connect(actionUndo, &QAction::triggered, this->mainWidget->editor, &CodeEditor::undo);
+    tb->addAction(actionUndo);
+    menu->addAction(actionUndo);
+    //vor
+    QAction* actionRedo = new QAction(QIcon("://editredo.png"), "Redo", this);
+    actionRedo->setPriority(QAction::LowPriority);
+    actionRedo->setShortcut(QKeySequence::Redo);
+    connect(actionRedo, &QAction::triggered, this->mainWidget->editor, &CodeEditor::redo);
+    tb->addAction(actionRedo);
+    menu->addAction(actionRedo);
+    menu->addSeparator();
+    //ausschneiden
+    QAction* actionCut = new QAction(QIcon("://editcut.png"), "cut", this);
+    actionCut->setPriority(QAction::LowPriority);
+    actionCut->setShortcut(QKeySequence::Cut);
+    connect(actionCut, &QAction::triggered, this->mainWidget->editor, &CodeEditor::cut);
+    tb->addAction(actionCut);
+    menu->addAction(actionCut);
+    //kopieren
+    QAction* actionCopy = new QAction(QIcon("://editcopy.png"), "copy", this);
+    actionCopy->setPriority(QAction::LowPriority);
+    actionCopy->setShortcut(QKeySequence::Copy);
+    connect(actionCopy, &QAction::triggered, this->mainWidget->editor, &CodeEditor::copy);
+    tb->addAction(actionCopy);
+    menu->addAction(actionCopy);
+    //einfügen
+    QAction* actionPaste = new QAction(QIcon("://editpaste.png"), "paste", this);
+    actionPaste->setPriority(QAction::LowPriority);
+    actionPaste->setShortcut(QKeySequence::Paste);
+    connect(actionPaste, &QAction::triggered, this->mainWidget->editor, &CodeEditor::paste);
+    tb->addAction(actionPaste);
+    menu->addAction(actionPaste);
 
     //wenn erlaubt, direkt verinden
     QFile file("config.txt");
@@ -100,11 +140,20 @@ MainWindow::MainWindow(QWidget *parent)
             }
         }
     }
+    this->mainWidget->editor->setFocus();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event){
+    if (maybeSave()) {
+        event->accept();
+    } else {
+        event->ignore();
+    }
 }
 
 void MainWindow::search(){
