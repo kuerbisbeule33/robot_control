@@ -21,7 +21,46 @@
 #include <QTextEdit>
 #include <QFileDialog>
 #include <QSaveFile>
+#include <QSplitter>
+#include "setpointwidget.h"
 #include "settingsdialog.h"
+
+const double armLengthHorizontal = 1.0;
+const double armLengthVertical = 1.0;
+const double gripLength = 1.0;
+
+double lawOfCosinus(double a, double b, double c){
+    return qAcos((a*a + b*b - c*c) / (2*a*b));
+}
+
+Point angleToCoordinates(quint16 rotationAngle, quint16 tiltAngle, quint16 horizontalAngle){
+    //x nach rechts
+    //y nach oben
+    //z nach vorne
+    Point point;
+    double rotation = static_cast<double>(rotationAngle);
+    double tilt = static_cast<double>(tiltAngle);
+    double horizontal = static_cast<double>(horizontalAngle);
+    double ditanzXZ = qCos(tilt) * armLengthVertical + qCos(180-tilt-horizontal) * armLengthHorizontal + gripLength;
+    point.x = qCos(rotation) * ditanzXZ;
+    point.y = qSin(tilt) * armLengthVertical - qSin(180-tilt-horizontal) * armLengthHorizontal;
+    point.z = -qSin(rotation) * ditanzXZ;
+    return point;
+}
+
+void CoordinatesToAngle(Point point, quint16& rotationAngle, quint16& tiltAngle, quint16& horizontalAngle){
+    //2 teile der Koordinaten von https://appliedgo.net/roboticarm/
+    //x nach rechts
+    //y nach oben
+    //z nach vorne
+    rotationAngle = static_cast<quint16>(qAtan2(-point.z, point.x));
+    double distOnGround = qSqrt(point.x*point.x + point.z*point.z) - gripLength;
+    double dist2Dimensions = qSqrt(point.y*point.y + distOnGround*distOnGround);
+    quint16 helpAngle1 = qAtan2(point.y, distOnGround);
+    quint16 helpAngle2 = static_cast<quint16>(lawOfCosinus(dist2Dimensions, armLengthVertical, armLengthHorizontal));
+    tiltAngle = helpAngle1 + helpAngle2;
+    horizontalAngle = static_cast<quint16>(lawOfCosinus(armLengthVertical, armLengthHorizontal, dist2Dimensions));
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) , ui(new Ui::MainWindow), port(nullptr)
@@ -29,9 +68,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     //wainwidget
-    mainWidget = new MainWidget(this);
-    this->setCentralWidget(mainWidget);
-    connect(this->mainWidget->editor->document(), &QTextDocument::contentsChanged, this, &MainWindow::documentWasModified);
+    QSplitter* splitter = new QSplitter(Qt::Orientation::Horizontal, this);
+    editor = new CodeEditor;
+    SetPointWidget* setPointWidget = new SetPointWidget;
+    splitter->addWidget(editor);
+    splitter->addWidget(setPointWidget);
+    this->setCentralWidget(splitter);
+
+    //mainWidget = new MainWidget(this);
+    //this->setCentralWidget(mainWidget);
+    connect(this->editor->document(), &QTextDocument::contentsChanged, this, &MainWindow::documentWasModified);
 
     //Fenster anpassen
     QMainWindow::showMaximized();
@@ -85,14 +131,14 @@ MainWindow::MainWindow(QWidget *parent)
     //zurück
     QAction* actionUndo = new QAction(QIcon("://editundo.png"), "Undo", this);
     actionUndo->setShortcut(QKeySequence::Undo);
-    connect(actionUndo, &QAction::triggered, this->mainWidget->editor, &CodeEditor::undo);
+    connect(actionUndo, &QAction::triggered, this->editor, &CodeEditor::undo);
     tb->addAction(actionUndo);
     menu->addAction(actionUndo);
     //vor
     QAction* actionRedo = new QAction(QIcon("://editredo.png"), "Redo", this);
     actionRedo->setPriority(QAction::LowPriority);
     actionRedo->setShortcut(QKeySequence::Redo);
-    connect(actionRedo, &QAction::triggered, this->mainWidget->editor, &CodeEditor::redo);
+    connect(actionRedo, &QAction::triggered, this->editor, &CodeEditor::redo);
     tb->addAction(actionRedo);
     menu->addAction(actionRedo);
     menu->addSeparator();
@@ -100,21 +146,21 @@ MainWindow::MainWindow(QWidget *parent)
     QAction* actionCut = new QAction(QIcon("://editcut.png"), "cut", this);
     actionCut->setPriority(QAction::LowPriority);
     actionCut->setShortcut(QKeySequence::Cut);
-    connect(actionCut, &QAction::triggered, this->mainWidget->editor, &CodeEditor::cut);
+    connect(actionCut, &QAction::triggered, this->editor, &CodeEditor::cut);
     tb->addAction(actionCut);
     menu->addAction(actionCut);
     //kopieren
     QAction* actionCopy = new QAction(QIcon("://editcopy.png"), "copy", this);
     actionCopy->setPriority(QAction::LowPriority);
     actionCopy->setShortcut(QKeySequence::Copy);
-    connect(actionCopy, &QAction::triggered, this->mainWidget->editor, &CodeEditor::copy);
+    connect(actionCopy, &QAction::triggered, this->editor, &CodeEditor::copy);
     tb->addAction(actionCopy);
     menu->addAction(actionCopy);
     //einfügen
     QAction* actionPaste = new QAction(QIcon("://editpaste.png"), "paste", this);
     actionPaste->setPriority(QAction::LowPriority);
     actionPaste->setShortcut(QKeySequence::Paste);
-    connect(actionPaste, &QAction::triggered, this->mainWidget->editor, &CodeEditor::paste);
+    connect(actionPaste, &QAction::triggered, this->editor, &CodeEditor::paste);
     tb->addAction(actionPaste);
     menu->addAction(actionPaste);
 
@@ -266,7 +312,7 @@ bool MainWindow::saveFile(const QString &fileName){
     QSaveFile file(fileName);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
         QTextStream out(&file);
-        out << this->mainWidget->editor->toPlainText();
+        out << this->editor->toPlainText();
         if (!file.commit()) {
             errorMessage = tr("Cannot write file %1:\n%2.")
                            .arg(QDir::toNativeSeparators(fileName), file.errorString());
@@ -313,11 +359,11 @@ bool MainWindow::saveAs(){
 }
 
 void MainWindow::documentWasModified(){
-    setWindowModified(this->mainWidget->editor->document()->isModified());
+    setWindowModified(this->editor->document()->isModified());
 }
 
 bool MainWindow::maybeSave(){
-    if (!this->mainWidget->editor->document()->isModified())
+    if (!this->editor->document()->isModified())
         return true;
     const QMessageBox::StandardButton ret
         = QMessageBox::warning(this, tr("Application"),
@@ -348,7 +394,7 @@ void MainWindow::loadFile(const QString &fileName){
 #ifndef QT_NO_CURSOR
     QGuiApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
-    this->mainWidget->editor->setPlainText(in.readAll());
+    this->editor->setPlainText(in.readAll());
 #ifndef QT_NO_CURSOR
     QGuiApplication::restoreOverrideCursor();
 #endif
@@ -359,7 +405,7 @@ void MainWindow::loadFile(const QString &fileName){
 
 void MainWindow::setCurrentFile(const QString &fileName){
     curFile = fileName;
-    this->mainWidget->editor->document()->setModified(false);
+    this->editor->document()->setModified(false);
     setWindowModified(false);
 
     QString shownName = curFile;
@@ -374,7 +420,7 @@ QString MainWindow::strippedName(const QString &fullFileName){
 
 void MainWindow::newFile(){
     if (maybeSave()) {
-        this->mainWidget->editor->clear();
+        this->editor->clear();
         setCurrentFile(QString());
     }
 }

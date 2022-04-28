@@ -10,7 +10,6 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    MainWidget.cpp \
     mainwindow.cpp \
     pushbutton.cpp \
     serialportwriter.cpp \
@@ -19,7 +18,6 @@ SOURCES += \
     codeeditor.cpp
 
 HEADERS += \
-    MainWidget.h \
     mainwindow.h \
     pushbutton.h \
     serialportwriter.h \

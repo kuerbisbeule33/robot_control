@@ -9,8 +9,23 @@
 #include <QList>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include "codeeditor.h"
 #include "settingsdialog.h"
 #include "MainWidget.h"
+
+extern const double armLengthHorizontal;
+extern const double armLengthVertical;
+extern const double gripLength;
+
+struct Point {
+    double x;
+    double y;
+    double z;
+};
+
+double lawOfCosinus(double a, double b, double c);
+Point angleToCoordinates(quint16 rotationAngle, quint16 tiltAngle, quint16 horizontalAngle);
+void CoordinatesToAngle(Point point, quint16& rotationAngle, quint16& tiltAngle, quint16& horizontalAngle);
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -27,12 +42,12 @@ public:
 
 private:
     Ui::MainWindow* ui;
-    MainWidget* mainWidget;
     SettingsDialog* settings;
     QMenu* connectionMenu;
     QList<QAction*> connectionList;
     QSerialPort* port;
     QString curFile;
+    CodeEditor* editor;
 
 private slots:
     void search();
