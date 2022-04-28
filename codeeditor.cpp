@@ -177,5 +177,4 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
         ++blockNumber;
     }
 }
-//![extraAreaPaintEvent_2]
 

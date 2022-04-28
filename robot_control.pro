@@ -14,6 +14,7 @@ SOURCES += \
     mainwindow.cpp \
     pushbutton.cpp \
     serialportwriter.cpp \
+    setpointwidget.cpp \
     settingsdialog.cpp \
     codeeditor.cpp
 
@@ -22,6 +23,7 @@ HEADERS += \
     mainwindow.h \
     pushbutton.h \
     serialportwriter.h \
+    setpointwidget.h \
     settingsdialog.h \
     codeeditor.h
 

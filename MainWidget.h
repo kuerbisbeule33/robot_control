@@ -9,6 +9,7 @@
 #include <codeeditor.h>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <setpointwidget.h>
 #include "pushbutton.h"
 
 extern const double armLengthHorizontal;
@@ -33,26 +34,10 @@ public:
     explicit MainWidget(QWidget *parent = nullptr);
 
 private:
-    QSpinBox* angle1;
-    QSpinBox* angle2;
-    QSpinBox* angle3;
-    QSpinBox* angle4;
-    PushButton* left1;
-    PushButton* right1;
-    PushButton* left2;
-    PushButton* right2;
-    PushButton* left3;
-    PushButton* right3;
-    PushButton* left4;
-    PushButton* right4;
-    QSpinBox* step;
-    QPushButton* savePoint;
-    QSlider* slider1;
-    QSlider* slider2;
-    QSlider* slider3;
-    QSlider* slider4;
+
 public:
     CodeEditor* editor;
+
 };
 
 

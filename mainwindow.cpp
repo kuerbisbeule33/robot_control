@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     //wainwidget
-    mainWidget = new MainWidget();
+    mainWidget = new MainWidget(this);
     this->setCentralWidget(mainWidget);
     connect(this->mainWidget->editor->document(), &QTextDocument::contentsChanged, this, &MainWindow::documentWasModified);
 
@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
     //verbindungsmenü
     connectionMenu = menuBar()->addMenu("Connection");
     connectionMenu->setToolTipsVisible(true);
-    QAction* set = new QAction("Settings");
+    QAction* set = new QAction("Settings", this);
     set->setIcon(QIcon("://settings.ico"));
     set->setIconVisibleInMenu(true);
     connect(set, SIGNAL(triggered()), this, SLOT(openSettings()));
@@ -130,7 +130,7 @@ MainWindow::MainWindow(QWidget *parent)
             const auto infos = QSerialPortInfo::availablePorts();
             if (infos.size() == 1){
                  //port = new QSerialPort(infos.first().portName());
-                 QAction* closeConnection = new QAction("disconnect");
+                 QAction* closeConnection = new QAction("disconnect", this);
                  closeConnection->setIcon(QIcon("://exit.ico"));
                  closeConnection->setIconVisibleInMenu(true);
                  connectionMenu->addAction(closeConnection);
@@ -140,7 +140,6 @@ MainWindow::MainWindow(QWidget *parent)
             }
         }
     }
-    this->mainWidget->editor->setFocus();
 }
 
 MainWindow::~MainWindow()
@@ -167,7 +166,7 @@ void MainWindow::search(){
     //alle Ports auslesen
     const auto infos = QSerialPortInfo::availablePorts();
     if (infos.empty()){
-        QAction* nothing = new QAction("no dvice available");
+        QAction* nothing = new QAction("no dvice available", this);
         nothing->setEnabled(false);
         connectionMenu->addAction(nothing);
         connectionList.push_back(nothing);
@@ -182,7 +181,7 @@ void MainWindow::search(){
 
             //gefundene Verbidnung als auswahl eintragen
             QString name = info.portName();
-            QAction* detectedDevice = new QAction(name);
+            QAction* detectedDevice = new QAction(name, this);
             detectedDevice->setToolTip(deviceInfo);
             if (port != nullptr) {
                 if (port->portName() == name){
@@ -197,7 +196,7 @@ void MainWindow::search(){
         }
 
         if (port != nullptr){
-            QAction* closeConnection = new QAction("disconnect");
+            QAction* closeConnection = new QAction("disconnect", this);
             closeConnection->setIcon(QIcon("://exit.ico"));
             closeConnection->setIconVisibleInMenu(true);
             connectionMenu->addAction(closeConnection);
@@ -209,7 +208,7 @@ void MainWindow::search(){
 
 void MainWindow::connectToPort(QString portName){
     if (port == nullptr){
-        port = new QSerialPort(portName);
+        port = new QSerialPort(portName, this);
         loadPortSettings();
         if (!port->open(QIODevice::WriteOnly)) {
             QMessageBox::information(0,"error", "Can't open Port");

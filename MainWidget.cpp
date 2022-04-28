@@ -1,5 +1,9 @@
 #include "MainWidget.h"
 #include <QtMath>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QSplitter>
+#include <QSplitterHandle>
 #include "pushbutton.h"
 
 const double armLengthHorizontal = 1.0;
@@ -42,46 +46,15 @@ void CoordinatesToAngle(Point point, quint16& rotationAngle, quint16& tiltAngle,
 MainWidget::MainWidget(QWidget *parent)
     : QWidget{parent}
 {
-
-    savePoint = new QPushButton("save Point in File");
-    savePoint->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    step = new QSpinBox;
-    step->setRange(1, 50);
-    step->setFixedWidth(75);
-    QHBoxLayout* otherHBox = new QHBoxLayout;
-    otherHBox->addWidget(step);
-    otherHBox->addWidget(savePoint);
-
-    //motor 1
-    slider1 = new QSlider(Qt::Orientation::Horizontal);
-    slider1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    slider1->setMaximum(360);
-    angle1 = new QSpinBox;
-    angle1->setRange(0, 360);
-    angle1->setFixedWidth(75);
-    connect(slider1, &QSlider::valueChanged, angle1, &QSpinBox::setValue);
-    connect(angle1, &QSpinBox::valueChanged, slider1, &QSlider::setValue);
-    left1 = new PushButton(slider1, step, QIcon("://left.png"), "", this);
-    right1 = new PushButton(slider1, step, QIcon("://right.png"), "", this);
-    connect(left1, &QPushButton::clicked, left1, &PushButton::stepLeft);
-    connect(right1, &QPushButton::clicked, left1, &PushButton::stepRight);
-    QHBoxLayout* slider1HBox = new QHBoxLayout;
-    slider1HBox->addWidget(slider1);
-    slider1HBox->addWidget(angle1);
-    slider1HBox->addWidget(left1);
-    slider1HBox->addWidget(right1);
-
-
-    QVBoxLayout* sliderVbox = new QVBoxLayout;
-    sliderVbox->addLayout(slider1HBox);
-    //sliderVbox->addLayout(slider2HBox);
-    //sliderVbox->addLayout(slider3HBox);
-    //sliderVbox->addLayout(slider4HBox);
-    sliderVbox->addLayout(otherHBox);
-
-    editor = new CodeEditor;
-    QHBoxLayout* globalHbox = new QHBoxLayout;
-    globalHbox->addLayout(sliderVbox);
-    globalHbox->addWidget(editor);
-    setLayout(globalHbox);
+    QSplitter* spliter = new QSplitter(this);
+    editor = new CodeEditor(this);
+    SetPointWidget* setPointWidget = new SetPointWidget(this);
+    spliter->addWidget(editor);
+    spliter->addWidget(setPointWidget);
+    spliter->setOrientation(Qt::Orientation::Horizontal);
+    QHBoxLayout* mainLayout = new QHBoxLayout(this);
+    mainLayout->addWidget(setPointWidget);
+    mainLayout->addWidget(editor);
+    this->setLayout(mainLayout);
+    this->editor->setFocus();
 }
