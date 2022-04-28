@@ -14,5 +14,8 @@
         <file>editpaste.png</file>
         <file>editredo.png</file>
         <file>editundo.png</file>
+        <file>infinity.png</file>
+        <file>once.png</file>
+        <file>stop.png</file>
     </qresource>
 </RCC>

@@ -164,6 +164,28 @@ MainWindow::MainWindow(QWidget *parent)
     tb->addAction(actionPaste);
     menu->addAction(actionPaste);
 
+    //robot run mode
+    QToolBar *toolBaarMode = addToolBar("Robot-Run-Mode");
+    QMenu *menuMode = menuBar()->addMenu("Robot-Run-Mode");
+    //einmal
+    QAction* actionOnce = new QAction(QIcon("://once.png"), "Run Once", this);
+    //actionUndo->setShortcut(QKeySequence::);
+    //connect(actionUndo, &QAction::triggered, this->editor, &CodeEditor::undo);
+    toolBaarMode->addAction(actionOnce);
+    menuMode->addAction(actionOnce);
+    //unendlich
+    QAction* actionInfinity = new QAction(QIcon("://infinity.png"), "Run Infinity", this);
+    //actionUndo->setShortcut(QKeySequence::);
+    //connect(actionUndo, &QAction::triggered, this->editor, &CodeEditor::undo);
+    toolBaarMode->addAction(actionInfinity);
+    menuMode->addAction(actionInfinity);
+    //stop
+    QAction* actionStop = new QAction(QIcon("://stop.png"), "Stop Run", this);
+    //actionUndo->setShortcut(QKeySequence::);
+    //connect(actionUndo, &QAction::triggered, this->editor, &CodeEditor::undo);
+    toolBaarMode->addAction(actionStop);
+    menuMode->addAction(actionStop);
+
     //wenn erlaubt, direkt verinden
     QFile file("config.txt");
     if (!file.open(QIODevice::ReadOnly)) {

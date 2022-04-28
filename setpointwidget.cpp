@@ -79,12 +79,12 @@ SetPointWidget::SetPointWidget(QWidget *parent)
     slider3HBox->addWidget(left3);
     slider3HBox->addWidget(right3);
 
+    //globales Layout
     QVBoxLayout* slider123VBox = new QVBoxLayout;
     slider123VBox->addLayout(slider1HBox);
     slider123VBox->addLayout(slider2HBox);
     slider123VBox->addLayout(slider3HBox);
     slider123VBox->addLayout(otherHBox);
-
     QVBoxLayout* sliderVBox = new QVBoxLayout(this);
     sliderVBox->addLayout(slider123VBox);
     this->setLayout(slider123VBox);
