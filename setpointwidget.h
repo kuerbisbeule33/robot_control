@@ -2,6 +2,7 @@
 #define SETPOINTWIDGET_H
 
 #include <QWidget>
+#include <QTextBrowser>
 
 class SetPointWidget : public QWidget
 {
@@ -9,6 +10,8 @@ class SetPointWidget : public QWidget
 public:
     explicit SetPointWidget(QWidget *parent = nullptr);
 
+public:
+    QTextBrowser* log;
 signals:
 
 };
