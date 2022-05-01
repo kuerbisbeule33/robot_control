@@ -7,7 +7,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QComboBox>
-#include <QDoubleSpinBox>
+#include <QSpinBox>
 #include <setpointwidget.h>
 #include <QGridLayout>
 #include <QLine>
@@ -19,18 +19,20 @@
 SetPointWidget::SetPointWidget(QWidget *parent)
     : QWidget{parent}
 {
-    QComboBox* gCode = new QComboBox();
+    //pos settings
+    gCode = new QComboBox();
     gCode->addItem("G00");
     QLabel* xPosLabel = new QLabel("X-Pos");
     QLabel* yPosLabel = new QLabel("Y-Pos");
     QLabel* zPosLabel = new QLabel("Z-Pos");
     QLabel* gCodeLabel = new QLabel("G-Code-Command");
     QLabel* stepLabel = new QLabel("Step-Width");
-    QDoubleSpinBox* xPos = new QDoubleSpinBox();
-    QDoubleSpinBox* yPos = new QDoubleSpinBox();
-    QDoubleSpinBox* zPos = new QDoubleSpinBox();
-    QPushButton* savePoint = new QPushButton("save Point in File");
+    xPos = new QSpinBox();
+    yPos = new QSpinBox();
+    zPos = new QSpinBox();
+    savePoint = new QPushButton("save Point in File");
     savePoint->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    connect(savePoint, &QPushButton::clicked, this, &SetPointWidget::newPosGcodeEmitted);
     QSpinBox* step = new QSpinBox;
     step->setRange(1, 50);
     step->setFixedWidth(75);
@@ -115,23 +117,18 @@ SetPointWidget::SetPointWidget(QWidget *parent)
     QSpinBox* stepGripper = new QSpinBox;
     stepGripper->setRange(1, 50);
     stepGripper->setFixedWidth(75);
-    QPushButton* savePointGripper = new QPushButton("save Point in File");
+    savePointGripper = new QPushButton("save Point in File");
     savePointGripper->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    QPushButton* openGripper = new QPushButton("open Gripper");
-    openGripper->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    QPushButton* closeGripper = new QPushButton("close Gripper");
-    closeGripper->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    connect(savePointGripper, &QPushButton::clicked, this, &SetPointWidget::newGripperGcodeEmitted);
     //greifer slider layout
     QHBoxLayout* gripperSetHBox = new QHBoxLayout;
-    gripperSetHBox->addWidget(openGripper);
-    gripperSetHBox->addWidget(closeGripper);
     gripperSetHBox->addWidget(savePointGripper);
     gripperSetHBox->addWidget(stepGripperLabel);
     gripperSetHBox->addWidget(stepGripper);
 
     //greifer slider
-    QLabel* labelGripper = new QLabel("Gripper G00");
-    QSlider* sliderGripper = new QSlider(Qt::Orientation::Horizontal);
+    labelGripper = new QLabel("G01");
+    sliderGripper = new QSlider(Qt::Orientation::Horizontal);
     sliderGripper->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     sliderGripper->setMaximum(90);
     QSpinBox* angleGripper = new QSpinBox;
@@ -158,13 +155,20 @@ SetPointWidget::SetPointWidget(QWidget *parent)
     setPointVBox->addSpacerItem(spacer1);
     setPointVBox->addLayout(gripperPosHBox);
     setPointVBox->addLayout(gripperSetHBox);
-     QSpacerItem* spacer2 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    QPushButton* deleteLastLine = new QPushButton("Delete Last Line");
+    QSpacerItem* spacer2 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
     setPointVBox->addSpacerItem(spacer2);
-    setPointVBox->addWidget(deleteLastLine);
-     QSpacerItem* spacer3 = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    setPointVBox->addSpacerItem(spacer3);
     log = new QTextBrowser;
     setPointVBox->addWidget(log);
     this->setLayout(setPointVBox);
+}
+
+//slots
+void SetPointWidget::newPosGcodeEmitted(){
+    QString code = this->gCode->currentText() + " x" + xPos->cleanText() + " y" + yPos->cleanText() + " z" + zPos->cleanText();
+    emit newPosGcode(code);
+}
+
+void SetPointWidget::newGripperGcodeEmitted(){
+    QString code = this->labelGripper->text() + " a" + QString().setNum(this->sliderGripper->value());
+    emit newGripperGcode(code);
 }

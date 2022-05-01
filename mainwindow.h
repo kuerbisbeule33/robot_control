@@ -12,20 +12,8 @@
 #include "codeeditor.h"
 #include "settingsdialog.h"
 #include "MainWidget.h"
+#include "setpointwidget.h"
 
-extern const double armLengthHorizontal;
-extern const double armLengthVertical;
-extern const double gripLength;
-
-struct Point {
-    double x;
-    double y;
-    double z;
-};
-
-double lawOfCosinus(double a, double b, double c);
-Point angleToCoordinates(quint16 rotationAngle, quint16 tiltAngle, quint16 horizontalAngle);
-void CoordinatesToAngle(Point point, quint16& rotationAngle, quint16& tiltAngle, quint16& horizontalAngle);
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -48,6 +36,7 @@ private:
     QSerialPort* port;
     QString curFile;
     CodeEditor* editor;
+    SetPointWidget* setPointWidget;
 
 private slots:
     void search();
