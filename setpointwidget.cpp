@@ -166,9 +166,9 @@ SetPointWidget::SetPointWidget(QWidget *parent)
     connect(slider1, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
     connect(slider2, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
     connect(slider3, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
-    //connect(xPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
-    //connect(yPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
-    //connect(zPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
+    connect(xPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
+    connect(yPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
+    connect(zPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
 }
 
 //slots

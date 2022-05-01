@@ -1,9 +1,9 @@
 #include "conversion.h"
 #include <QtMath>
 
-const double armLengthHorizontal = 1.0;
-const double armLengthVertical = 1.0;
-const double gripLength = 1.0;
+const double armLengthHorizontal = 18.0; //cm
+const double armLengthVertical = 13.5;
+const double gripLength = 5.0;
 
 double lawOfCosinus(double a, double b, double c){
     return qAcos((a*a + b*b - c*c) / (2*a*b));
