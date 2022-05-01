@@ -57,6 +57,11 @@ private slots:
     void open();
     void documentWasModified();
 
+    void sendAngleGripper1(quint16 angleGripper);
+    void sendAngleVertical2(quint16 angleVertical);
+    void sendAngleHorizontal3(quint16 angleHorizontal);
+    void sendAngleRotation4(quint16 angleRotation);
+
 public:
 
     bool maybeSave();

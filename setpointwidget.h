@@ -21,13 +21,13 @@ public:
     QSpinBox* xPos;
     QSpinBox* yPos;
     QSpinBox* zPos;
-    QLabel* labelGripper;
-    QSlider* sliderGripper;
+    QLabel* labelGripper1;
+    QSlider* sliderGripper1;
     QPushButton* savePoint;
-    QPushButton* savePointGripper;
-    QSlider* slider1;
-    QSlider* slider2;
-    QSlider* slider3;
+    QPushButton* savePointGripper1;
+    QSlider* sliderVertical2;
+    QSlider* sliderHorizontal3;
+    QSlider* sliderRotation4;
 
 public:
     QTextBrowser* log;

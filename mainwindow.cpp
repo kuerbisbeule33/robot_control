@@ -43,6 +43,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this->editor->document(), &QTextDocument::contentsChanged, this, &MainWindow::documentWasModified);
     connect(this->setPointWidget, &SetPointWidget::newPosGcode, this->editor, &CodeEditor::appendPlainText);
     connect(this->setPointWidget, &SetPointWidget::newGripperGcode, this->editor, &CodeEditor::appendPlainText);
+    connect(this->setPointWidget->sliderGripper1, &QSlider::valueChanged, this, &MainWindow::sendAngleGripper1);
+    connect(this->setPointWidget->sliderVertical2, &QSlider::valueChanged, this, &MainWindow::sendAngleVertical2);
+    connect(this->setPointWidget->sliderHorizontal3, &QSlider::valueChanged, this, &MainWindow::sendAngleHorizontal3);
+    connect(this->setPointWidget->sliderRotation4, &QSlider::valueChanged, this, &MainWindow::sendAngleRotation4);
 
     //Fenster anpassen
     QMainWindow::showMaximized();
@@ -175,6 +179,7 @@ MainWindow::MainWindow(QWidget *parent)
                 actionOnce->setDisabled(true);
                 actionInfinity->setDisabled(true);
                 actionStop->setDisabled(true);
+                setPointWidget->setDisabled(true);
             }
         }
     }
@@ -248,6 +253,7 @@ void MainWindow::connectToPort(QString portName){
     actionOnce->setDisabled(false);
     actionInfinity->setDisabled(false);
     actionStop->setDisabled(false);
+    setPointWidget->setDisabled(false);
     if (port == nullptr){
         port = new QSerialPort(portName, this);
         loadPortSettings();
@@ -288,6 +294,7 @@ void MainWindow::disconnectPort(){
     actionOnce->setDisabled(true);
     actionInfinity->setDisabled(true);
     actionStop->setDisabled(true);
+    setPointWidget->setDisabled(true);
     port->flush();
     port->close();
     if (port != nullptr){
@@ -422,3 +429,28 @@ void MainWindow::newFile(){
         setCurrentFile(QString());
     }
 }
+
+void MainWindow::sendAngleGripper1(quint16 angleGripper){
+    if (port != nullptr){
+        port->write("1" + QByteArray().setNum(angleGripper));
+    }
+}
+
+void MainWindow::sendAngleVertical2(quint16 angleVertical){
+    if (port != nullptr){
+        port->write("2" + QByteArray().setNum(angleVertical));
+    }
+}
+
+void MainWindow::sendAngleHorizontal3(quint16 angleHorizontal){
+    if (port != nullptr){
+        port->write("3" + QByteArray().setNum(angleHorizontal));
+    }
+}
+
+void MainWindow::sendAngleRotation4(quint16 angleRotation){
+    if (port != nullptr){
+        port->write("4" + QByteArray().setNum(angleRotation));
+    }
+}
+
