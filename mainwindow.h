@@ -9,6 +9,8 @@
 #include <QList>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QToolBar>
+#include <QMenu>
 #include "codeeditor.h"
 #include "settingsdialog.h"
 #include "MainWidget.h"
@@ -37,6 +39,11 @@ private:
     QString curFile;
     CodeEditor* editor;
     SetPointWidget* setPointWidget;
+    QToolBar* toolBaarMode;
+    QMenu* menuMode;
+    QAction* actionOnce;
+    QAction* actionInfinity;
+    QAction* actionStop;
 
 private slots:
     void search();

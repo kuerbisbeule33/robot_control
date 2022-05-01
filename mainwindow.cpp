@@ -130,22 +130,22 @@ MainWindow::MainWindow(QWidget *parent)
     menu->addAction(actionPaste);
 
     //robot run mode
-    QToolBar *toolBaarMode = addToolBar("Robot-Run-Mode");
-    QMenu *menuMode = menuBar()->addMenu("Robot-Run-Mode");
+    toolBaarMode = addToolBar("Robot-Run-Mode");
+    menuMode = menuBar()->addMenu("Robot-Run-Mode");
     //einmal
-    QAction* actionOnce = new QAction(QIcon("://once.png"), "Run Once", this);
+    actionOnce = new QAction(QIcon("://once.png"), "Run Once", this);
     //actionUndo->setShortcut(QKeySequence::);
     //connect(actionUndo, &QAction::triggered, this->editor, &CodeEditor::undo);
     toolBaarMode->addAction(actionOnce);
     menuMode->addAction(actionOnce);
     //unendlich
-    QAction* actionInfinity = new QAction(QIcon("://infinity.png"), "Run Infinity", this);
+    actionInfinity = new QAction(QIcon("://infinity.png"), "Run Infinity", this);
     //actionUndo->setShortcut(QKeySequence::);
     //connect(actionUndo, &QAction::triggered, this->editor, &CodeEditor::undo);
     toolBaarMode->addAction(actionInfinity);
     menuMode->addAction(actionInfinity);
     //stop
-    QAction* actionStop = new QAction(QIcon("://stop.png"), "Stop Run", this);
+    actionStop = new QAction(QIcon("://stop.png"), "Stop Run", this);
     //actionUndo->setShortcut(QKeySequence::);
     //connect(actionUndo, &QAction::triggered, this->editor, &CodeEditor::undo);
     toolBaarMode->addAction(actionStop);
@@ -170,6 +170,11 @@ MainWindow::MainWindow(QWidget *parent)
                  connectionList.push_back(closeConnection);
                  connect(closeConnection, SIGNAL(triggered()), this, SLOT(disconnectPort()));
                  connectToPort(infos.first().portName());
+            }
+            else{
+                actionOnce->setDisabled(true);
+                actionInfinity->setDisabled(true);
+                actionStop->setDisabled(true);
             }
         }
     }
@@ -240,6 +245,9 @@ void MainWindow::search(){
 }
 
 void MainWindow::connectToPort(QString portName){
+    actionOnce->setDisabled(false);
+    actionInfinity->setDisabled(false);
+    actionStop->setDisabled(false);
     if (port == nullptr){
         port = new QSerialPort(portName, this);
         loadPortSettings();
@@ -277,6 +285,9 @@ void MainWindow::loadPortSettings(){
 }
 
 void MainWindow::disconnectPort(){
+    actionOnce->setDisabled(true);
+    actionInfinity->setDisabled(true);
+    actionStop->setDisabled(true);
     port->flush();
     port->close();
     if (port != nullptr){
