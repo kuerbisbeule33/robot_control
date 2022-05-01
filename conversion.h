@@ -15,6 +15,6 @@ struct Point {
 
 double lawOfCosinus(double a, double b, double c);
 Point angleToCoordinates(quint16 rotationAngle, quint16 tiltAngle, quint16 horizontalAngle);
-void CoordinatesToAngle(Point point, quint16& rotationAngle, quint16& tiltAngle, quint16& horizontalAngle);
+void coordinatesToAngle(Point point, quint16& rotationAngle, quint16& tiltAngle, quint16& horizontalAngle);
 
 #endif // CONVERSION_H

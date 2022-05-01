@@ -24,7 +24,7 @@ Point angleToCoordinates(quint16 rotationAngle, quint16 tiltAngle, quint16 horiz
     return point;
 }
 
-void CoordinatesToAngle(Point point, quint16& rotationAngle, quint16& tiltAngle, quint16& horizontalAngle){
+void coordinatesToAngle(Point point, quint16& rotationAngle, quint16& tiltAngle, quint16& horizontalAngle){
     //2 teile der Koordinaten von https://appliedgo.net/roboticarm/
     //x nach rechts
     //y nach oben

@@ -15,6 +15,7 @@
 #include <QTextBrowser>
 #include "pushbutton.h"
 #include "setpointwidget.h"
+#include "conversion.h"
 
 SetPointWidget::SetPointWidget(QWidget *parent)
     : QWidget{parent}
@@ -51,7 +52,7 @@ SetPointWidget::SetPointWidget(QWidget *parent)
 
     //motor 1
     QLabel* label1 = new QLabel("Horizontal");
-    QSlider* slider1 = new QSlider(Qt::Orientation::Horizontal);
+    slider1 = new QSlider(Qt::Orientation::Horizontal);
     slider1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     slider1->setMaximum(360);
     QSpinBox* angle1 = new QSpinBox;
@@ -66,7 +67,7 @@ SetPointWidget::SetPointWidget(QWidget *parent)
 
     //motor 2
     QLabel* label2 = new QLabel("Vertical  ");
-    QSlider* slider2 = new QSlider(Qt::Orientation::Horizontal);
+    slider2 = new QSlider(Qt::Orientation::Horizontal);
     slider2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     slider2->setMaximum(360);
     QSpinBox* angle2 = new QSpinBox;
@@ -81,7 +82,7 @@ SetPointWidget::SetPointWidget(QWidget *parent)
 
     //motor 3
     QLabel* label3 = new QLabel("Rotation  ");
-    QSlider* slider3 = new QSlider(Qt::Orientation::Horizontal);
+    slider3 = new QSlider(Qt::Orientation::Horizontal);
     slider3->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     slider3->setMaximum(360);
     QSpinBox* angle3 = new QSpinBox;
@@ -160,6 +161,14 @@ SetPointWidget::SetPointWidget(QWidget *parent)
     log = new QTextBrowser;
     setPointVBox->addWidget(log);
     this->setLayout(setPointVBox);
+
+    //connects
+    connect(slider1, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
+    connect(slider2, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
+    connect(slider3, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
+    //connect(xPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
+    //connect(yPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
+    //connect(zPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
 }
 
 //slots
@@ -169,6 +178,39 @@ void SetPointWidget::newPosGcodeEmitted(){
 }
 
 void SetPointWidget::newGripperGcodeEmitted(){
-    QString code = this->labelGripper->text() + " a" + QString().setNum(this->sliderGripper->value());
+    QString code = this->labelGripper->text() + " d" + QString().setNum(this->sliderGripper->value());
     emit newGripperGcode(code);
+}
+
+void SetPointWidget::changeXYZpos(){
+    disconnect(this->xPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
+    disconnect(this->yPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
+    disconnect(this->zPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
+    quint16 rotationAngle = this->slider3->value();
+    quint16 tiltAngle = this->slider2->value();
+    quint16 horizontalAngle = this->slider1->value();
+    Point point = angleToCoordinates(rotationAngle, tiltAngle, horizontalAngle);
+    xPos->setValue(point.x);
+    yPos->setValue(point.y);
+    zPos->setValue(point.z);
+    connect(this->xPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
+    connect(this->yPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
+    connect(this->zPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
+}
+
+void SetPointWidget::changeAnglePos(){
+    disconnect(this->slider1, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
+    disconnect(this->slider2, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
+    disconnect(this->slider3, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
+    Point point {this->xPos->value(), this->yPos->value(), this->zPos->value()};
+    quint16 rotationAngle;
+    quint16 tiltAngle;
+    quint16 horizontalAngle;
+    coordinatesToAngle(point, rotationAngle, tiltAngle, horizontalAngle);
+    this->slider1->setValue(horizontalAngle);
+    this->slider2->setValue(tiltAngle);
+    this->slider3->setValue(rotationAngle);
+    connect(this->slider1, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
+    connect(this->slider2, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
+    connect(this->slider3, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
 }

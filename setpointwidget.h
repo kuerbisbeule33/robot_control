@@ -25,6 +25,9 @@ public:
     QSlider* sliderGripper;
     QPushButton* savePoint;
     QPushButton* savePointGripper;
+    QSlider* slider1;
+    QSlider* slider2;
+    QSlider* slider3;
 
 public:
     QTextBrowser* log;
@@ -36,6 +39,8 @@ signals:
 private slots:
     void newPosGcodeEmitted();
     void newGripperGcodeEmitted();
+    void changeXYZpos();
+    void changeAnglePos();
 
 };
 
