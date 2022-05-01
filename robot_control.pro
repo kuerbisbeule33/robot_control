@@ -9,17 +9,23 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    conversion.cpp \
     main.cpp \
-    MainWidget.cpp \
     mainwindow.cpp \
+    pushbutton.cpp \
     serialportwriter.cpp \
-    settingsdialog.cpp
+    setpointwidget.cpp \
+    settingsdialog.cpp \
+    codeeditor.cpp
 
 HEADERS += \
-    MainWidget.h \
+    conversion.h \
     mainwindow.h \
+    pushbutton.h \
     serialportwriter.h \
-    settingsdialog.h
+    setpointwidget.h \
+    settingsdialog.h \
+    codeeditor.h
 
 FORMS += \
     mainwindow.ui \

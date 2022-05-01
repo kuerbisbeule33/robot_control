@@ -1,15 +1,13 @@
-#include "MainWidget.h"
+#include "showwidget.h"
 #include <QtMath>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QSplitter>
-#include <QWidget>
 #include <QSplitterHandle>
-#include "pushbutton.h"
+#include "codeeditor.h"
+#include "setpointwidget.h"
 
-
-
-MainWidget::MainWidget(QWidget *parent)
+ShowWidget::ShowWidget(QWidget *parent)
     : QWidget{parent}
 {
 
