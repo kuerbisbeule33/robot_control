@@ -24,6 +24,7 @@
 #include <QSplitter>
 #include "setpointwidget.h"
 #include "settingsdialog.h"
+#include "kinematics.h"
 
 
 

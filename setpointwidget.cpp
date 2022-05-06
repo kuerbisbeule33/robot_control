@@ -15,7 +15,7 @@
 #include <QTextBrowser>
 #include "pushbutton.h"
 #include "setpointwidget.h"
-#include "conversion.h"
+#include "kinematics.h"
 
 SetPointWidget::SetPointWidget(QWidget *parent)
     : QWidget{parent}
@@ -85,13 +85,17 @@ SetPointWidget::SetPointWidget(QWidget *parent)
     pointBox->addWidget(savePoint, 1, 4);
     pointBox->addWidget(step, 1, 5);
 
+    xPos->setRange(50,500);
+    yPos->setRange(50,500);
+    zPos->setRange(50,500);
+
     //vertival //alt: motor 2 //neu:motor 2
     QLabel* labelVertical2 = new QLabel("Vertical  ");
     sliderVertical2 = new QSlider(Qt::Orientation::Horizontal);
     sliderVertical2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    sliderVertical2->setMaximum(360);
+    sliderVertical2->setRange(-150,150);
     QSpinBox* angleVertical2 = new QSpinBox;
-    angleVertical2->setRange(0, 360);
+    angleVertical2->setRange(-150, 150);
     angleVertical2->setFixedWidth(75);
     connect(sliderVertical2, &QSlider::valueChanged, angleVertical2, &QSpinBox::setValue);
     connect(angleVertical2, &QSpinBox::valueChanged, sliderVertical2, &QSlider::setValue);
@@ -104,9 +108,9 @@ SetPointWidget::SetPointWidget(QWidget *parent)
     QLabel* labelHorizontal3 = new QLabel("Horizontal");
     sliderHorizontal3 = new QSlider(Qt::Orientation::Horizontal);
     sliderHorizontal3->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    sliderHorizontal3->setMaximum(360);
+    sliderHorizontal3->setRange(-150, 150);
     QSpinBox* angleHorizontal3 = new QSpinBox;
-    angleHorizontal3->setRange(0, 360);
+    angleHorizontal3->setRange(-150, 150);
     angleHorizontal3->setFixedWidth(75);
     connect(sliderHorizontal3, &QSlider::valueChanged, angleHorizontal3, &QSpinBox::setValue);
     connect(angleHorizontal3, &QSpinBox::valueChanged, sliderHorizontal3, &QSlider::setValue);
@@ -119,9 +123,9 @@ SetPointWidget::SetPointWidget(QWidget *parent)
     QLabel* labelRotation4 = new QLabel("Rotation  ");
     sliderRotation4 = new QSlider(Qt::Orientation::Horizontal);
     sliderRotation4->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    sliderRotation4->setMaximum(360);
+    sliderRotation4->setRange(-150,150);
     QSpinBox* angleRotation4 = new QSpinBox;
-    angleRotation4->setRange(0, 360);
+    angleRotation4->setRange(-150, 150);
     angleRotation4->setFixedWidth(75);
     connect(sliderRotation4, &QSlider::valueChanged, angleRotation4, &QSpinBox::setValue);
     connect(angleRotation4, &QSpinBox::valueChanged, sliderRotation4, &QSlider::setValue);
@@ -188,10 +192,11 @@ void SetPointWidget::changeXYZpos(){
     disconnect(this->xPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
     disconnect(this->yPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
     disconnect(this->zPos, &QSpinBox::valueChanged, this, &SetPointWidget::changeAnglePos);
-    quint16 rotationAngle = this->sliderRotation4->value();
-    quint16 tiltAngle = this->sliderVertical2->value();
-    quint16 horizontalAngle = this->sliderHorizontal3->value();
-    Point point = angleToCoordinates(rotationAngle, tiltAngle, horizontalAngle);
+    Angles angles;
+    angles.q1 =this->sliderRotation4->value();
+    angles.q2 =this->sliderVertical2->value();
+    angles.q3 = this->sliderHorizontal3->value();
+    Point point = forwardKinematics(angles);
     xPos->setValue(point.x);
     yPos->setValue(point.y);
     zPos->setValue(point.z);
@@ -205,13 +210,10 @@ void SetPointWidget::changeAnglePos(){
     disconnect(this->sliderHorizontal3, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
     disconnect(this->sliderRotation4, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
     Point point {static_cast<quint16>(this->xPos->value()), static_cast<quint16>(this->yPos->value()), static_cast<quint16>(this->zPos->value())};
-    quint16 rotationAngle;
-    quint16 tiltAngle;
-    quint16 horizontalAngle;
-    coordinatesToAngle(point, rotationAngle, tiltAngle, horizontalAngle);
-    this->sliderVertical2->setValue(horizontalAngle);
-    this->sliderHorizontal3->setValue(tiltAngle);
-    this->sliderRotation4->setValue(rotationAngle);
+    Angles angles = reverseKinematics(point);
+    this->sliderVertical2->setValue(angles.q2);
+    this->sliderHorizontal3->setValue(angles.q3);
+    this->sliderRotation4->setValue(angles.q1);
     connect(this->sliderVertical2, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
     connect(this->sliderHorizontal3, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
     connect(this->sliderRotation4, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
