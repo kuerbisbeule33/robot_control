@@ -2,10 +2,19 @@
 #define KINEMATICS_H
 
 #include <QtMath>
+//Grenzen der von den Servos erreichbaren Winkel
+extern const double Q1_MIN;
+extern const double Q1_MAX;
+extern const double Q2_MIN;
+extern const double Q2_MAX;
+extern double Q3_MIN;
+extern double Q3_MAX;
+//Längen der einzelnen Gelenke
+extern const double  L1; //mm
+extern const double  L2;
+extern const double  L3;
+extern const double  L4;
 
-extern const double armLengthHorizontal;
-extern const double armLengthVertical;
-extern const double gripLength;
 
 
 struct Point {
@@ -27,10 +36,11 @@ struct Angles {
     double q3;
 };
 
+void q3CalcLimits(Angles angles);
 bool checkErrorJointLimits(Angles angles); // Überprüfe ob Winkel innerhalb der Grenzen liegen, sonst erzeuge Fehlermeldung
 Point forwardKinematics(Angles); //übergebe Winkel und berechne daraus die Greiferposition
 Angles reverseKinematics(Point); //übergebe Punkt der Greiferposition und berechne daraus die Winkel
-
+Angles mapKinematicsToServoAngles(Angles angles);
 
 
 #endif // KINEMATICS_H

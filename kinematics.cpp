@@ -1,11 +1,25 @@
 #include "kinematics.h"
 #include <QtMath>
 
+//Grenzen der von den Servos erreichbaren Winkel
+const double Q1_MIN = -30;
+const double Q1_MAX = 30;
+const double Q2_MIN = 39;
+const double Q2_MAX = 120;
+      double Q3_MIN;
+      double Q3_MAX;
 //Längen der einzelnen Gelenke
 const double  L1 = 92.0; //mm
 const double  L2 = 135.0;
 const double  L3 = 147.0;
 const double  L4 = 87.0;
+
+
+void q3CalcLimits(Angles angles){
+    Q3_MIN = (-0.6755*angles.q2)-70.768;
+    Q3_MAX = (-0.7165*angles.q2)-13.144;
+
+}
 
 double lawOfCosinus(double a, double b, double c){
     return qAcos((a*a + b*b - c*c) / (2*a*b));
@@ -50,4 +64,24 @@ Angles reverseKinematics(Point point){
     result.q3 = result.q3 *180/M_PI;
 
     return result;
+}
+
+bool checkErrorJointLimits(Angles angles){
+    q3CalcLimits(angles);
+    // testen auf nan und inf bei der Berechnung
+    if(angles.q1 == NAN || angles.q1 == INFINITY || angles.q2 == NAN || angles.q2 == INFINITY || angles.q3 == NAN || angles.q3 == INFINITY){
+        return true;
+    }
+    else if(angles.q1 >= Q1_MIN && angles.q1 <= Q1_MAX && angles.q2 >= Q2_MIN && angles.q2 <= Q2_MAX && angles.q3 >= Q3_MIN && angles.q3 <= Q3_MAX){
+        return true;
+    }
+    return false;
+}
+
+Angles mapKinematicsToServoAngles(Angles angles){
+    Angles servoAngles;
+    servoAngles.q1 = ((-2.0479)*angles.q1)+91.726;
+    servoAngles.q2  = 180-angles.q2;
+    servoAngles.q3 = angles.q2 - 45 + (180 - (-angles.q3));
+    return servoAngles;
 }
