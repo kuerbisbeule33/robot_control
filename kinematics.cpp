@@ -6,8 +6,8 @@ const double Q1_MIN = -30;
 const double Q1_MAX = 30;
 const double Q2_MIN = 39;
 const double Q2_MAX = 120;
-      double Q3_MIN;
-      double Q3_MAX;
+      double Q3_MIN = 0;
+      double Q3_MAX = 180;
 //Längen der einzelnen Gelenke
 const double  L1 = 92.0; //mm
 const double  L2 = 135.0;
@@ -78,10 +78,15 @@ bool checkErrorJointLimits(Angles angles){
     return false;
 }
 
-Angles mapKinematicsToServoAngles(Angles angles){
-    Angles servoAngles;
-    servoAngles.q1 = ((-2.0479)*angles.q1)+91.726;
-    servoAngles.q2  = 180-angles.q2;
-    servoAngles.q3 = angles.q2 - 45 + (180 - (-angles.q3));
-    return servoAngles;
+quint16 q1ToServo(double q1){
+    q1 = round(((-2.0479)*q1)+91.726);
+    return q1;
+}
+quint16 q2ToServo(double q2){
+    q2  = round(180- q2);
+    return q2;
+}
+quint16 q3ToServo(double q2, double q3){
+    q3 = round(q2 + 135 + q3);
+    return q3;
 }

@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    //wainwidget
+    //mainwidget
     QSplitter* splitter = new QSplitter(Qt::Orientation::Horizontal, this);
     editor = new CodeEditor;
     setPointWidget = new SetPointWidget;
@@ -46,13 +46,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this->setPointWidget, &SetPointWidget::newGripperGcode, this->editor, &CodeEditor::appendPlainText);
     connect(this->setPointWidget->sliderGripper1, &QSlider::valueChanged, this, &MainWindow::sendAngleGripper1);
     connect(this->setPointWidget->sliderVertical2, &QSlider::valueChanged, this, &MainWindow::sendAngleVertical2);
-    connect(this->setPointWidget->sliderHorizontal3, &QSlider::valueChanged, this, &MainWindow::sendAngleHorizontal3);
+    //connect(this->setPointWidget->sliderHorizontal3, &QSlider::valueChanged, [this,this->setPointWidget->angleVertical2->value(), this->setPointWidget->angleHorizontal3->value()] {sendAngleHorizontal3(angleVertical2->value(),angleHorizontal3->value());});
+    connect(this->setPointWidget->sliderHorizontal3, &QSlider::valueChanged, [=] () {sendAngleHorizontal3(this->setPointWidget->sliderVertical2->value(), this->setPointWidget->sliderHorizontal3->value());});
     connect(this->setPointWidget->sliderRotation4, &QSlider::valueChanged, this, &MainWindow::sendAngleRotation4);
+
 
     //Fenster anpassen
     QMainWindow::showMaximized();
     QMainWindow::setWindowTitle("Robot Control");
-
     //verbindungsmenü
     connectionMenu = menuBar()->addMenu("Connection");
     connectionMenu->setToolTipsVisible(true);
@@ -437,21 +438,21 @@ void MainWindow::sendAngleGripper1(quint16 angleGripper){
     }
 }
 
-void MainWindow::sendAngleVertical2(quint16 angleVertical){
+void MainWindow::sendAngleVertical2(double angleVertical){
     if (port != nullptr){
-        port->write("2" + QByteArray().setNum(angleVertical));
+        port->write("2" + QByteArray().setNum(q2ToServo(angleVertical)));
     }
 }
 
-void MainWindow::sendAngleHorizontal3(quint16 angleHorizontal){
+void MainWindow::sendAngleHorizontal3(double angleVertical, double angleHorizontal){
     if (port != nullptr){
-        port->write("3" + QByteArray().setNum(angleHorizontal));
+        port->write("3" + QByteArray().setNum(q3ToServo(angleVertical, angleHorizontal)));
     }
 }
 
-void MainWindow::sendAngleRotation4(quint16 angleRotation){
+void MainWindow::sendAngleRotation4(double angleRotation){
     if (port != nullptr){
-        port->write("4" + QByteArray().setNum(angleRotation));
+        port->write("4" + QByteArray().setNum(q1ToServo(angleRotation)));
     }
 }
 

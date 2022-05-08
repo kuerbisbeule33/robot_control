@@ -38,9 +38,9 @@ SetPointWidget::SetPointWidget(QWidget *parent)
     labelGripper1 = new QLabel("G01");
     sliderGripper1 = new QSlider(Qt::Orientation::Horizontal);
     sliderGripper1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    sliderGripper1->setMaximum(90);
+    sliderGripper1->setRange(90, 180);
     QSpinBox* angleGripper1 = new QSpinBox;
-    angleGripper1->setRange(0, 90);
+    angleGripper1->setRange(90, 180);
     connect(sliderGripper1, &QSlider::valueChanged, angleGripper1, &QSpinBox::setValue);
     connect(angleGripper1, &QSpinBox::valueChanged, sliderGripper1, &QSlider::setValue);
     PushButton* leftGripper1 = new PushButton(sliderGripper1, stepGripper1, QIcon("://left.png"), "");
@@ -93,9 +93,9 @@ SetPointWidget::SetPointWidget(QWidget *parent)
     QLabel* labelVertical2 = new QLabel("Vertical  ");
     sliderVertical2 = new QSlider(Qt::Orientation::Horizontal);
     sliderVertical2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    sliderVertical2->setRange(0,180);
+    sliderVertical2->setRange(Q2_MIN,Q2_MAX);
     QSpinBox* angleVertical2 = new QSpinBox;
-    angleVertical2->setRange(0,180);
+    angleVertical2->setRange(Q2_MIN,Q2_MAX);
     angleVertical2->setFixedWidth(75);
     connect(sliderVertical2, &QSlider::valueChanged, angleVertical2, &QSpinBox::setValue);
     connect(angleVertical2, &QSpinBox::valueChanged, sliderVertical2, &QSlider::setValue);
@@ -108,9 +108,9 @@ SetPointWidget::SetPointWidget(QWidget *parent)
     QLabel* labelHorizontal3 = new QLabel("Horizontal");
     sliderHorizontal3 = new QSlider(Qt::Orientation::Horizontal);
     sliderHorizontal3->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    sliderHorizontal3->setRange(0,180);
+    sliderHorizontal3->setRange(Q3_MIN,Q3_MAX);
     QSpinBox* angleHorizontal3 = new QSpinBox;
-    angleHorizontal3->setRange(0,180);
+    angleHorizontal3->setRange(Q3_MIN,Q3_MAX);
     angleHorizontal3->setFixedWidth(75);
     connect(sliderHorizontal3, &QSlider::valueChanged, angleHorizontal3, &QSpinBox::setValue);
     connect(angleHorizontal3, &QSpinBox::valueChanged, sliderHorizontal3, &QSlider::setValue);
@@ -123,9 +123,9 @@ SetPointWidget::SetPointWidget(QWidget *parent)
     QLabel* labelRotation4 = new QLabel("Rotation  ");
     sliderRotation4 = new QSlider(Qt::Orientation::Horizontal);
     sliderRotation4->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    sliderRotation4->setRange(0,180);
+    sliderRotation4->setRange(Q1_MIN,Q1_MAX);
     QSpinBox* angleRotation4 = new QSpinBox;
-    angleRotation4->setRange(0,180);
+    angleRotation4->setRange(Q1_MIN,Q1_MAX);
     angleRotation4->setFixedWidth(75);
     connect(sliderRotation4, &QSlider::valueChanged, angleRotation4, &QSpinBox::setValue);
     connect(angleRotation4, &QSpinBox::valueChanged, sliderRotation4, &QSlider::setValue);
@@ -211,12 +211,9 @@ void SetPointWidget::changeAnglePos(){
     disconnect(this->sliderRotation4, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
     Point point {static_cast<quint16>(this->xPos->value()), static_cast<quint16>(this->yPos->value()), static_cast<quint16>(this->zPos->value())};
     Angles angles = reverseKinematics(point);
-    if(!checkErrorJointLimits(angles)){
-        angles = mapKinematicsToServoAngles(angles);
         this->sliderVertical2->setValue(angles.q2);
         this->sliderHorizontal3->setValue(angles.q3);
         this->sliderRotation4->setValue(angles.q1);
-    }
     connect(this->sliderVertical2, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
     connect(this->sliderHorizontal3, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);
     connect(this->sliderRotation4, &QSlider::valueChanged, this, &SetPointWidget::changeXYZpos);

@@ -27,7 +27,7 @@ struct Angles {
     // Winkel der drei Bewegungsachsen ohne Greifer
     /*
      * Die Winekl sind so definiert: Basis: q1 = 0° Basis zeigt nach vorne
-     *                               Hauptarm: q2
+     *                               Vertikalarm: q2
      *                               Horizontalarm: q3
      *
      */
@@ -40,7 +40,8 @@ void q3CalcLimits(Angles angles);
 bool checkErrorJointLimits(Angles angles); // Überprüfe ob Winkel innerhalb der Grenzen liegen, sonst erzeuge Fehlermeldung
 Point forwardKinematics(Angles); //übergebe Winkel und berechne daraus die Greiferposition
 Angles reverseKinematics(Point); //übergebe Punkt der Greiferposition und berechne daraus die Winkel
-Angles mapKinematicsToServoAngles(Angles angles);
-
+quint16 q1ToServo(double q1);
+quint16 q2ToServo(double q2);
+quint16 q3ToServo(double q2, double q3);
 
 #endif // KINEMATICS_H
