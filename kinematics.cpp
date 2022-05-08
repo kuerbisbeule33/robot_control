@@ -67,7 +67,7 @@ Angles reverseKinematics(Point point){
 }
 
 bool checkErrorJointLimits(Angles angles){
-    q3CalcLimits(angles);
+    q3CalcLimits(angles.q2);
     // testen auf nan und inf bei der Berechnung
     if(angles.q1 == NAN || angles.q1 == INFINITY || angles.q2 == NAN || angles.q2 == INFINITY || angles.q3 == NAN || angles.q3 == INFINITY){
         return true;
