@@ -6,8 +6,8 @@ const double Q1_MIN = -30;
 const double Q1_MAX = 30;
 const double Q2_MIN = 39;
 const double Q2_MAX = 120;
-      double Q3_MIN = 0;
-      double Q3_MAX = 180;
+      double Q3_MIN = -90;
+      double Q3_MAX = 90;
 //Längen der einzelnen Gelenke
 const double  L1 = 92.0; //mm
 const double  L2 = 135.0;
@@ -15,9 +15,9 @@ const double  L3 = 147.0;
 const double  L4 = 87.0;
 
 
-void q3CalcLimits(Angles angles){
-    Q3_MIN = (-0.6755*angles.q2)-70.768;
-    Q3_MAX = (-0.7165*angles.q2)-13.144;
+void q3CalcLimits(double angleVertical2){
+    Q3_MIN = (-0.6755*angleVertical2)-70.768;
+    Q3_MAX = (-0.7165*angleVertical2)-13.144;
 
 }
 

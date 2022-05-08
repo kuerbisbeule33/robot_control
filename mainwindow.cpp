@@ -157,7 +157,7 @@ MainWindow::MainWindow(QWidget *parent)
     toolBaarMode->addAction(actionStop);
     menuMode->addAction(actionStop);
 
-    //wenn erlaubt, direkt verinden
+    //wenn erlaubt, direkt verbinden
     QFile file("config.txt");
     if (!file.open(QIODevice::ReadOnly)) {
         QMessageBox::information(0,"error",file.errorString() + "\n\nno auto conneciton");
